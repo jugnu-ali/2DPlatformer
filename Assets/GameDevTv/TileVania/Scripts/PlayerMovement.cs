@@ -3,23 +3,95 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+namespace TileVania
 {
-    Vector2 moveInput; 
-    void Start()
+    public class PlayerMovement : MonoBehaviour
     {
-        
-    }
+        [SerializeField] float movementSpeed = 2f;
+        [SerializeField] float jumpSpeed = 5f;
+        [SerializeField] float climbSpeed = 5f;
+        Rigidbody2D rb;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        float initialGravity;
 
-    void OnMove(InputValue value)
-    {
-        moveInput = value.Get<Vector2>();
-        Debug.Log(moveInput);
+        CapsuleCollider2D myBodyCollider;
+        BoxCollider2D myFeetCollider;
+        Animator animator;
+
+        Vector2 moveInput;
+        void Start()
+        {
+            rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            myBodyCollider = GetComponent<CapsuleCollider2D>();
+            myFeetCollider = GetComponent<BoxCollider2D>();
+            initialGravity = rb.gravityScale;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            Run();
+            FlipSprite();
+            ClimbLadder();
+        }
+
+        void OnMove(InputValue value)
+        {
+            moveInput = value.Get<Vector2>();
+            Debug.Log(moveInput);
+        }
+
+        void OnJump(InputValue value)
+        {
+            if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
+            {
+                return;
+            }
+
+            if (value.isPressed)
+            {
+                // Do stuff
+                rb.velocity += new Vector2(0, jumpSpeed);
+            }
+        }
+
+        void Run()
+        {
+            Vector2 playerVelocity = new Vector2(moveInput.x * movementSpeed, rb.velocity.y);
+            rb.velocity = playerVelocity;
+
+            bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+            animator.SetBool("isRunning", playerHasHorizontalSpeed);
+        }
+
+        void FlipSprite()
+        {
+            // Mathf.epsilon means its almost equal to zero and good/better for comparison of float with zero. 
+            bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+
+            if (playerHasHorizontalSpeed)
+            {
+                transform.localScale = new Vector2(Mathf.Sign(rb.velocity.x), 1f);
+            }
+        }
+
+        void ClimbLadder()
+        {
+            if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climbing")))
+            {
+                rb.gravityScale = initialGravity;
+                animator.SetBool("isClimbing", false);
+                return;
+            }
+
+            rb.gravityScale = 0f;
+            Vector2 climbVelocity = new Vector2(rb.velocity.x, moveInput.y * climbSpeed);
+            rb.velocity = climbVelocity;
+
+            bool playerHasVerticalSpeed = Mathf.Abs(rb.velocity.y) > Mathf.Epsilon;
+            animator.SetBool("isClimbing", playerHasVerticalSpeed);
+        }
     }
 }
+
