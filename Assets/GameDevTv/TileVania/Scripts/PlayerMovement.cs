@@ -10,6 +10,7 @@ namespace TileVania
         [SerializeField] float movementSpeed = 2f;
         [SerializeField] float jumpSpeed = 5f;
         [SerializeField] float climbSpeed = 5f;
+        [SerializeField] Vector2 deathKick = new Vector2(5f, 5f);
         Rigidbody2D rb;
 
         float initialGravity;
@@ -17,6 +18,8 @@ namespace TileVania
         CapsuleCollider2D myBodyCollider;
         BoxCollider2D myFeetCollider;
         Animator animator;
+
+        bool isAlive = true;
 
         Vector2 moveInput;
         void Start()
@@ -31,19 +34,33 @@ namespace TileVania
         // Update is called once per frame
         void Update()
         {
+            if(!isAlive)
+            {
+                return;
+            }
             Run();
             FlipSprite();
             ClimbLadder();
+            Die();
         }
 
         void OnMove(InputValue value)
         {
+            if (!isAlive)
+            {
+                return;
+            }
             moveInput = value.Get<Vector2>();
             Debug.Log(moveInput);
         }
 
         void OnJump(InputValue value)
         {
+            if (!isAlive)
+            {
+                return;
+            }
+
             if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
             {
                 return;
@@ -91,6 +108,16 @@ namespace TileVania
 
             bool playerHasVerticalSpeed = Mathf.Abs(rb.velocity.y) > Mathf.Epsilon;
             animator.SetBool("isClimbing", playerHasVerticalSpeed);
+        }
+
+        void Die()
+        {
+            if (rb.IsTouchingLayers(LayerMask.GetMask("Enemies", "Hazards")))
+            {
+                isAlive = false;
+                animator.SetTrigger("Dying");
+                rb.velocity = deathKick;
+            }
         }
     }
 }
