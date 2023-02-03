@@ -11,6 +11,12 @@ namespace TileVania
         [SerializeField] float jumpSpeed = 5f;
         [SerializeField] float climbSpeed = 5f;
         [SerializeField] Vector2 deathKick = new Vector2(5f, 5f);
+
+        [SerializeField] Transform gun;
+
+        [Header("Prefabs")]
+        [SerializeField] GameObject bulletPrefab;
+
         Rigidbody2D rb;
 
         float initialGravity;
@@ -51,7 +57,7 @@ namespace TileVania
                 return;
             }
             moveInput = value.Get<Vector2>();
-            Debug.Log(moveInput);
+            //Debug.Log(moveInput);
         }
 
         void OnJump(InputValue value)
@@ -72,6 +78,18 @@ namespace TileVania
                 rb.velocity += new Vector2(0, jumpSpeed);
             }
         }
+
+        void OnFire(InputValue value)
+        {
+            if (!isAlive)
+            {
+                return;
+            }
+
+            GameObject go = Instantiate(bulletPrefab, gun.position, transform.rotation);
+
+        }
+
 
         void Run()
         {
@@ -117,6 +135,7 @@ namespace TileVania
                 isAlive = false;
                 animator.SetTrigger("Dying");
                 rb.velocity = deathKick;
+                GameSession.instance.ProcessPlayerDeath();
             }
         }
     }

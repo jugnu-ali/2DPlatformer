@@ -6,7 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/GameDevTv/TileVania/Scenes/Level 1.unity
+    guid: 08747114415790d43b48c7c160649af2
+  - enabled: 1
+    path: Assets/GameDevTv/TileVania/Scenes/Level 2.unity
+    guid: 12250de24a1e8cb46863dcaa8a12a40c
+  - enabled: 1
+    path: Assets/GameDevTv/TileVania/Scenes/Level 3.unity
+    guid: fd0bbaefefd53f945a330ab059d1487d
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ef4734728bf7c6742a81796acbed99b1, type: 2}
