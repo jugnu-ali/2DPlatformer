@@ -5310,6 +5310,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ghost(Player)
       objectReference: {fileID: 0}
+    - target: {fileID: 1560528998309703379, guid: d111c4a258714e349bed377b1766b8e0, type: 3}
+      propertyPath: jumpSpeed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1560528998309703383, guid: d111c4a258714e349bed377b1766b8e0, type: 3}
       propertyPath: m_RootOrder
       value: 5
