@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
             {
                 // We have landed on Ground after the jump so get to idle state;
                 bJump = false;
-                animator.SetBool("Jump", bJump);
+                animator.SetBool("Jump", bJump); 
                 jumpElapsedTime = 0f;
             }
             
